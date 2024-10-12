@@ -59,19 +59,35 @@ def ganar_siempre(monedas):
         return memo[i][j]
 
     def reconstruir_elecciones(i, j):
+        """
+        Inicialmente i = 0 y j = len(monedas) - 1. Se simula el juego usando la información
+        almacenada en memo.
+        """
+
         while i <= j:
-            # Verificar qué opción escogió Sophia al comparar el valor en memo
+            # Verifico qué opción escogió Sophia al comparar el valor en memo
+
+            # Sofia elije la primer moneda [i].
+            # Los ifs revisan que decisión va a tomar Mateo luego de esto.
             if monedas[i + 1] >= monedas[j]:
+                # Mateo elije la moneda de la izquierda en el siguiente turno. El puntaje de Sophia
+                # va a ser la moneda [i] seleccionada más la solución óptima encontrada para las
+                # monedas restantes [i+2:j+1].
+                # Si el memo se fue de rango, retorno 0.
                 opcion1 = monedas[i] + (memo[i + 2][j] if i + 2 <= j else 0)
             else:
+                # Ahora Mateo elige la moneda de la izquierda.
                 opcion1 = monedas[i] + (memo[i + 1][j - 1] if i + 1 <= j - 1 else 0)
 
+            # Sofia elije la última moneda [j].
             if monedas[i] >= monedas[j - 1]:
+                # Mateo elige la moneda de la izquierda en el siguiente turno
                 opcion2 = monedas[j] + (memo[i + 1][j - 1] if i + 1 <= j - 1 else 0)
             else:
+                # Mateo elige la moneda de la derecha
                 opcion2 = monedas[j] + (memo[i][j - 2] if i <= j - 2 else 0)
 
-            # Sophia elige la mejor opción
+            # Nos quedamos con la mejor elección
             if opcion1 >= opcion2:
                 elecciones.append(f"Sophia debe agarrar la primera ({monedas[i]})")
                 i += 1
@@ -79,8 +95,8 @@ def ganar_siempre(monedas):
                 elecciones.append(f"Sophia debe agarrar la ultima ({monedas[j]})")
                 j -= 1
 
-            # Ahora es el turno de Mateo
-            if i <= j:
+            if i <= j:  # Siguen quedando monedas.
+                # Mateo selecciona de forma greedy
                 if monedas[i] >= monedas[j]:
                     elecciones.append(f"Mateo agarra la primera ({monedas[i]})")
                     i += 1

@@ -7,7 +7,8 @@ import os
 # Este parámetro controla cuantas veces se ejecuta el algoritmo para cada
 # tamaño. Esto es conveniente para reducir el error estadístico en la medición
 # de tiempos. Al finalizar las ejecuciones, se promedian los tiempos obtenidos
-RUNS_PER_SIZE = 20
+# RUNS_PER_SIZE = 20
+RUNS_PER_SIZE = 100 # Aumentamos el valor para disminuir el ruido
 
 # Ajustar este valor si se quiere usar más de un proceso para medir los tiempos
 # de ejecución, o None para usar todos los procesadores disponibles. Si se usan

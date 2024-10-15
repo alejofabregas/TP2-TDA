@@ -39,14 +39,14 @@ def maximizar_ganancia(monedas):
                 # elegir de forma Greedy entre la moneda izquierda [i+1] y la derecha [j].
                 # Por eso, Sophia se queda con la mínima entre ambas.
                 opcion_izq_izq = monedas[i] + mem[i+2][j] if monedas[i+1] >= monedas[j] and i+2 <= j else 0
-                opcion_izq_der = monedas[i] + mem[i+1][j-1] if monedas[i + 1] < monedas[j] and i+1 <= j-1 else 0
+                opcion_izq_der = monedas[i] + mem[i+1][j-1] if monedas[i+1] < monedas[j] and i+1 <= j-1 else 0
                 opcion_izq = max(opcion_izq_izq, opcion_izq_der)
                 
                 # Sophia elige la moneda del extremo derecho (monedas[j]), entonces ahora Matheo va a
                 # elegir de forma Greedy entre la moneda izquierda [i] y la derecha [j-1].
                 # Por eso, Sophia se queda con la mínima entre ambas.
-                opcion_der_der = monedas[j] + mem[i][j-2] if monedas[i] < monedas[j - 1] and i <= j-2 else 0
-                opcion_der_izq = monedas[j] + mem[i+1][j-1] if monedas[i] >= monedas[j - 1] and i+1 <= j-1 else 0
+                opcion_der_der = monedas[j] + mem[i][j-2] if monedas[i] < monedas[j-1] and i <= j-2 else 0
+                opcion_der_izq = monedas[j] + mem[i+1][j-1] if monedas[i] >= monedas[j-1] and i+1 <= j-1 else 0
                 opcion_der = max(opcion_der_der, opcion_der_izq)
                 
                 mem[i][j] = max(opcion_izq, opcion_der)
@@ -57,11 +57,11 @@ def maximizar_ganancia(monedas):
             # Verifico qué moneda eligió Sophia al comparar el valor en memo
             # Calculamos las opciones igual que antes y vemos cuál se utilizó en memo
             opcion_izq_izq = monedas[i] + mem[i+2][j] if monedas[i+1] >= monedas[j] and i+2 <= j else 0
-            opcion_izq_der = monedas[i] + mem[i+1][j-1] if monedas[i + 1] < monedas[j] and i+1 <= j-1 else 0
+            opcion_izq_der = monedas[i] + mem[i+1][j-1] if monedas[i+1] < monedas[j] and i+1 <= j-1 else 0
             opcion_izq = max(opcion_izq_izq, opcion_izq_der)
             
-            opcion_der_der = monedas[j] + mem[i][j-2] if monedas[i] < monedas[j - 1] and i <= j-2 else 0
-            opcion_der_izq = monedas[j] + mem[i+1][j-1] if monedas[i] >= monedas[j - 1] and i+1 <= j-1 else 0
+            opcion_der_der = monedas[j] + mem[i][j-2] if monedas[i] < monedas[j-1] and i <= j-2 else 0
+            opcion_der_izq = monedas[j] + mem[i+1][j-1] if monedas[i] >= monedas[j-1] and i+1 <= j-1 else 0
             opcion_der = max(opcion_der_der, opcion_der_izq)
 
             if mem[i][j] == opcion_der:

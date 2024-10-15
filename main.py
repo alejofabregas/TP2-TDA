@@ -25,23 +25,30 @@ def maximizar_ganancia(monedas):
         for i in range(n - largo_subarreglo + 1): # i es el inicio del subarreglo
             j = i + largo_subarreglo - 1  # j es el final del subarreglo
 
-            """
-            Caso base: una sola moneda.
-            Como Sophia elige primero, la toma y gana siempre.
-            """
+            # Caso base: una sola moneda.
+            # Como Sophia elige primero, la toma y gana siempre.
             if i == j:
                 mem[i][j] = monedas[i]  # Solo una moneda, Sophia la toma
+            # Caso base: dos monedas
+            # Como Sophia elige primero, toma la mayor y gana siempre.
+            elif i + 1 == j:
+                mem[i][j] = max(monedas[i], monedas[j]) # Dos monedas, Sophia toma la mayor
             else:
                 """Calculo la ganancia máxima que Sophia puede obtener si el arreglo fuera [i:j]"""
-                # Sophia elige la moneda del extremo izquierdo (monedas[i]), entonces ahora Matheo va a
-                # elegir de forma Greedy entre la moneda [i+1] y la [j]. Por eso, Sophia se queda con la
-                # mínima entre ambas.
-                opcion_izq = monedas[i] + min(mem[i+2][j] if i+2 <= j else 0, mem[i+1][j-1] if i+1 <= j-1 else 0)
+                # Sophia elige la moneda del extremo izquierdo (monedas[i]), entonces ahora Mateo va a
+                # elegir de forma Greedy entre la moneda izquierda [i+1] y la derecha [j].
+                # Por eso, Sophia se queda con la mínima entre ambas.
+                opcion_izq_izq = monedas[i] + mem[i+2][j] if monedas[i+1] >= monedas[j] and i+2 <= j else 0
+                opcion_izq_der = monedas[i] + mem[i+1][j-1] if monedas[i + 1] < monedas[j] and i+1 <= j-1 else 0
+                opcion_izq = max(opcion_izq_izq, opcion_izq_der)
+                
                 # Sophia elige la moneda del extremo derecho (monedas[j]), entonces ahora Matheo va a
-                # elegir de forma Greedy entre la moneda [i] y la [j-1]. Por eso, Sophia se queda con la
-                # mínima entre ambas.
-                opcion_der = monedas[j] + min(mem[i][j-2] if i <= j-2 else 0, mem[i+1][j-1] if i+1 <= j-1 else 0)
-                # Sophia se queda con la máxima entre las dos opciones.
+                # elegir de forma Greedy entre la moneda izquierda [i] y la derecha [j-1].
+                # Por eso, Sophia se queda con la mínima entre ambas.
+                opcion_der_der = monedas[j] + mem[i][j-2] if monedas[i] < monedas[j - 1] and i <= j-2 else 0
+                opcion_der_izq = monedas[j] + mem[i+1][j-1] if monedas[i] >= monedas[j - 1] and i+1 <= j-1 else 0
+                opcion_der = max(opcion_der_der, opcion_der_izq)
+                
                 mem[i][j] = max(opcion_izq, opcion_der)
 
     # Reconstrucción de las decisiones de Sophia y Mateo
@@ -49,17 +56,22 @@ def maximizar_ganancia(monedas):
         while i <= j:
             # Verifico qué moneda eligió Sophia al comparar el valor en memo
             # Calculamos las opciones igual que antes y vemos cuál se utilizó en memo
-            opcion_izq = monedas[i] + min(mem[i+2][j] if i+2 <= j else 0, mem[i+1][j-1] if i+1 <= j-1 else 0)
-            opcion_der = monedas[j] + min(mem[i][j-2] if i <= j-2 else 0, mem[i+1][j-1] if i+1 <= j-1 else 0)
+            opcion_izq_izq = monedas[i] + mem[i+2][j] if monedas[i+1] >= monedas[j] and i+2 <= j else 0
+            opcion_izq_der = monedas[i] + mem[i+1][j-1] if monedas[i + 1] < monedas[j] and i+1 <= j-1 else 0
+            opcion_izq = max(opcion_izq_izq, opcion_izq_der)
+            
+            opcion_der_der = monedas[j] + mem[i][j-2] if monedas[i] < monedas[j - 1] and i <= j-2 else 0
+            opcion_der_izq = monedas[j] + mem[i+1][j-1] if monedas[i] >= monedas[j - 1] and i+1 <= j-1 else 0
+            opcion_der = max(opcion_der_der, opcion_der_izq)
 
-            if mem[i][j] == opcion_izq:
-                # Se eligió la moneda del lado izquierdo
-                elecciones.append(f"Sophia debe agarrar la primera ({monedas[i]})")
-                i += 1
-            else:
+            if mem[i][j] == opcion_der:
                 # Se eligió la moneda del lado derecho
                 elecciones.append(f"Sophia debe agarrar la ultima ({monedas[j]})")
                 j -= 1
+            else:
+                # Se eligió la moneda del lado izquierdo
+                elecciones.append(f"Sophia debe agarrar la primera ({monedas[i]})")
+                i += 1
             
             if i <= j: # Siguen quedando monedas.
                 # Mateo selecciona de forma greedy
